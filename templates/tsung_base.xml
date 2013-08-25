@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="debug" version="1.0">
+
+    <!-- Client side setup -->
+    <clients>
+        <client host="localhost" use_controller_vm="true"/>
+
+    <!-- Server side setup -->
+    <servers>
+        {% if server_protocol and server_protocol == 'https' %}
+        <server host="{{ server_host }}" port="443" type="ssl"></server>
+        {% else %}
+        <server host="{{ server_host }}" port="80" type="tcp"></server>
+        {% endif %}
+    </servers>
+
+    <!-- Define load maximum duration and arrival rate of users -->
+    <load duration="{{ load.duration }}" unit="second">
+        <arrivalphase phase="1" duration="{{ load.duration }}" unit="second">
+            <users maxnumber="{{ load.max_users }}"
+                {% if load.arrivalrate -%}
+                arrivalrate="{{ load.arrivalrate }}"
+                {% else %}
+                interarrival="{{ interarrival }}"
+                {%- endif %} unit="second"></users>
+        </arrivalphase>
+    </load>
+
+    <sessions>
+
+        <!-- A simple user that just does GET / -->
+        <session name="basic" probability="100" type="ts_http">
+
+            <!-- Just repeat indefinitely -->
+            <for from="1" to="1000000" var="i">
+
+                <request>
+                    <http url="/v1/catalog/view/36/?uid=6280&amp;email=rob.odwyer@pretiointeractive.com&amp;points=1000" method="GET" version="1.1">
+                        <www_authenticate userid="585de5100b0a3b703013da3e153a90ded12f820a47b4baa0f2b9fb059a8b581c" passwd="0515ee1ea81b6b685ba2d112cfd50edfee3f13973f218e353316f14631ef1892"/>
+                    </http>
+                </request>
+
+                <thinktime value="10" random="true"></thinktime>
+
+            </for>
+        </session>
+
+    </sessions>
+</tsung>
+
+
+
+

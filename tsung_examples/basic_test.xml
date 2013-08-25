@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="debug" version="1.0">
+
+    <!-- Client side setup -->
+    <clients>
+        <client host="localhost" use_controller_vm="true"/>
+    </clients>
+
+    <!-- Server side setup -->
+    <servers>
+        <server host="localhost" port="8000" type="tcp"></server>
+    </servers>
+
+    <!-- Define load maximum duration and arrival rate of users -->
+    <load duration="5" unit="second">
+        <arrivalphase phase="1" duration="2" unit="second">
+            <users maxnumber="2" interarrival="1" unit="second"></users>
+        </arrivalphase>
+    </load>
+
+    <sessions>
+
+        <!-- A simple user that just requests HEAD / -->
+        <session name="basic" probability="100" type="ts_http">
+
+                <request>
+                    <http url="/" method="HEAD"></http>
+                </request>
+
+        </session>
+
+    </sessions>
+</tsung>
+
+
+

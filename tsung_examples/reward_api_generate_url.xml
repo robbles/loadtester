@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="debug" version="1.0">
+
+    <!-- Client side setup -->
+    <clients>
+        <client host="localhost" use_controller_vm="true"/>
+    </clients>
+
+    <!-- Server side setup -->
+    <servers>
+	<server host="api.pretio.in" port="443" type="ssl"></server>
+    </servers>
+
+    <!-- Define load maximum duration and arrival rate of users -->
+    <load duration="1200" unit="second">
+        <arrivalphase phase="1" duration="1000" unit="second">
+            <users maxnumber="1000" interarrival="1.0" unit="second"></users>
+        </arrivalphase>
+    </load>
+
+    <sessions>
+
+        <!-- A simple user that just does GET / -->
+        <session name="basic" probability="100" type="ts_http">
+
+            <!-- Just repeat indefinitely -->
+            <for from="1" to="10000" var="i">
+
+                <request>
+                    <http url="/v1/catalog/view/36/?uid=1234&amp;email=user@example.com&amp;points=1000" method="GET" version="1.1">
+	                <www_authenticate userid="key" passwd="secret"/>
+		    </http>
+                </request>
+                <thinktime value="10" random="true"></thinktime>
+
+            </for>
+        </session>
+
+    </sessions>
+</tsung>
+
+
+
